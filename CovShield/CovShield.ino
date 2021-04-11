@@ -16,29 +16,28 @@
 uint8_t oled_buf[WIDTH * HEIGHT / 8];
 
 // variables set
-int OUT = 3;
-int OUT1 = 2;
-int i = 0;
-bool czujnik1  = false;
-bool czujnik2 = false;
-IRTherm therm;
-bool block = false;
-float temperature;
-bool stop1 = false;
-bool clean = false;
-char ssid[] = " wifi name ";
-char pass[] = " wifi password ";
-int deviceId = 0;
-int maxPeople = 0;
-float maxTemperature = 0;
-int status = WL_IDLE_STATUS;
-char serverAddress[] = "cov-shield.herokuapp.com";
-WiFiSSLClient wifi;
-HttpClient client = HttpClient(wifi, serverAddress, 443);
-
-void setup()
+int OUT = 3; // sensor 1
+int OUT1 = 2; // sensor 2
+int i = 0; // variable number of people
+bool czujnik1  = false; // sensor 1 marker
+bool czujnik2 = false; // sensor 2 marker
+IRTherm therm; // PIR variable
+bool block = false; // block variable
+float temperature; // temperature variable
+bool stop1 = false; // temperature measuring variable
+bool clean = false; // OLED screen variable
+char ssid[] = " wifi name "; // wifi name
+char pass[] = " wifi password "; // wifi password
+int deviceId = 0; // device ID
+int maxPeople = 0; // max people variable
+float maxTemperature = 0; // max temperature variable
+int status = WL_IDLE_STATUS; // server status variable
+char serverAddress[] = "cov-shield.herokuapp.com"; // server adress variable
+WiFiSSLClient wifi; // wifi client variable
+HttpClient client = HttpClient(wifi, serverAddress, 443); // wifi variable
 
 // Output, input set
+void setup()
 {
   Serial.begin(9600);
   Wire.begin();
@@ -52,27 +51,28 @@ void setup()
   SH1106_begin();
   SH1106_string(0, 0, "Liczba os:", 16, 1, oled_buf);
   SH1106_display(oled_buf);
+
+// PIR sensor settings
   therm.begin();
   therm.setUnit(TEMP_C);
+
+// WIFI settings
   ConnectToWiFi();
   GetConfigurationData();
   Serial.println("Setup finished.");
 }
 
 void displayEntries()
-
 //adding and subtracting people
 {
   SH1106_char(86, 0, 48 + i / 10, 16, 1 , oled_buf);
   SH1106_char(97, 0, 48 + i % 10, 16, 1 , oled_buf);
   SH1106_display(oled_buf);
 }
-
 // process of measuring temperature
 void checkTemperature()
 {
   SH1106_clear(oled_buf);
-
   //detection of a person at the device
   do
   {
